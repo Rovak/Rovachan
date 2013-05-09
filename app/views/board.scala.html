@@ -1,0 +1,25 @@
+@(threads: List[rovachan.core.Thread])
+
+@import org.apache.commons.io.FilenameUtils
+
+<style type="text/css">
+	img {
+		max-height: 100px;
+	}
+
+</style>
+
+<h1>Found Threads</h1>
+
+@for(thread <- threads) {
+
+	<a href="@thread.url">Thread: @thread.id</a>
+	
+	@for(comment <- thread.comments) {
+		<br><img src="@routes.Assets.at("data/"  + FilenameUtils.getName(comment.image))">
+		@Html(comment.text)
+	}
+	
+	<hr>
+	
+}
