@@ -1,19 +1,19 @@
 Ext.application({
 
-	name: "Rovachan",
+    name: "Rovachan",
 
-	appFolder: env.basePath + "assets/app",
+    appFolder: env.basePath + "assets/app",
 
-	requires: [
-		'Ext.ux.IFrame'
-	],
+    requires: [
+        'Ext.ux.IFrame'
+    ],
 
-	controllers: [
-		'Navigation'
-	],
+    controllers: [
+        'Navigation'
+    ],
 
-	launch: function()
-	{
-		Ext.create("Rovachan.view.Viewport");
-	}
+    launch: function()
+    {
+        Ext.create("Rovachan.view.Viewport");
+    }
 });
