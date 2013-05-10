@@ -2,24 +2,22 @@
 
 @import org.apache.commons.io.FilenameUtils
 
-<style type="text/css">
-	img {
-		max-height: 100px;
+<div class="board">
+
+	@for(thread <- threads) {
+
+	    <div class="thread">
+
+	    	<a href="@thread.url">Thread: @thread.id</a>
+	    	<br>
+
+	    	@for(comment <- thread.comments) {
+	    		<img src="@rovachan.controllers.routes.Files.img(FilenameUtils.getName(comment.image))">
+	    		@Html(comment.text)
+	    	}
+
+	    </div>
+
 	}
 
-</style>
-
-<h1>Found Threads</h1>
-
-@for(thread <- threads) {
-
-	<a href="@thread.url">Thread: @thread.id</a>
-	
-	@for(comment <- thread.comments) {
-		<br><img src="@routes.Assets.at("data/"  + FilenameUtils.getName(comment.image))">
-		@Html(comment.text)
-	}
-	
-	<hr>
-	
-}
+</div>

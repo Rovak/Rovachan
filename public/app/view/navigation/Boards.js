@@ -20,7 +20,8 @@ Ext.define('Rovachan.view.navigation.Boards', {
             root: {},
             fields: [
                 { name: 'url',  type: 'string' },
-                { name: 'text', type: 'string' }
+                { name: 'text', type: 'string' },
+                { name: 'id',   type: 'string' }
             ],
             folderSort: true,
             sorters: [{

@@ -1,4 +1,4 @@
-package rovabot.chan.fourchan
+package rovachan.chan.fourchan
 
 import rovachan.core.Board
 import scala.concurrent._
@@ -27,10 +27,12 @@ object Fourchan {
       response.json \\ "boards" map {
         case JsArray(elements) =>
           for (element <- elements) {
-            boards ::= Board(
-              (element \ "title").as[String],
-              s"http://boards.4chan.org/${(element \ "board").as[String]}/",
-              s"http(s)://api.4chan.org/${(element \ "board").as[String]}/catalog.json")
+            var board = new Board
+            board.title = (element \ "title").as[String]
+            board.url = s"http://boards.4chan.org/${(element \ "board").as[String]}/"
+            board.apiUrl = s"http(s)://api.4chan.org/${(element \ "board").as[String]}/catalog.json"
+            board.id = (element \ "board").as[String]
+            boards ::= board
 
           }
         case JsObject(obj) => println("object")

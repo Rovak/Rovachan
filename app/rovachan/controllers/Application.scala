@@ -1,4 +1,4 @@
-package controllers
+package rovachan.controllers
 
 import scala.concurrent.Future
 import akka.actor.Props
@@ -11,7 +11,7 @@ import play.api.libs.ws.Response
 import play.api.libs.ws.WS
 import play.api.mvc.Action
 import play.api.mvc.Controller
-import rovabot.chan.fourchan.Fourchan
+import rovachan.chan.fourchan.Fourchan
 import rovachan.actors.ImageDownloader
 import rovachan.actors.DownloadImage
 import play.api.libs.json.Reads
@@ -42,10 +42,6 @@ object Application extends Controller {
     }
   }
 
-  def downloadImage = {
-
-  }
-
   def threads = Action {
 
     Async {
@@ -63,7 +59,6 @@ object Application extends Controller {
               thread.url = s"http://api.4chan.org/wg/res/${thread.id}.json"
               threads ::= thread
             }
-          case JsObject(obj) => println("object")
         }
 
         Ok(views.html.threads(threads, boards))
@@ -91,8 +86,9 @@ object Application extends Controller {
               var firstComment = new rovachan.core.Comment
               firstComment.text = (element \ "com").asOpt[String].getOrElse[String]("")
 
-              // Images
-              firstComment.image = s"http://0.thumbs.4chan.org/$boardName/thumb/${(element \ "tim").asOpt[Long].getOrElse[Long](0)}s.jpg"
+              val fileName = s"${(element \ "tim").asOpt[Long].getOrElse[Long](0)}s.jpg"
+
+              firstComment.image = s"http://0.thumbs.4chan.org/$boardName/thumb/$fileName"
 
               downloadActor ! DownloadImage(firstComment.image)
 
@@ -100,7 +96,6 @@ object Application extends Controller {
 
               threads ::= thread
             }
-          case JsObject(obj) => println("object")
         }
 
         Ok(views.html.board(threads))

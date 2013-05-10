@@ -3,12 +3,14 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
-GET		/threads					controllers.Application.threads
-GET		/board/:board				controllers.Application.board(board: String)
+GET     /                           rovachan.controllers.Application.index
+GET     /threads                    rovachan.controllers.Application.threads
+GET     /board/:board               rovachan.controllers.Application.board(board: String)
 
 # Data
-GET 	/data/boards				controllers.Data.boards
+GET     /data/boards                rovachan.controllers.Data.boards
+
+GET     /data/img/:path            rovachan.controllers.Files.img(path: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

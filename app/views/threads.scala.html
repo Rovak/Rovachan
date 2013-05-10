@@ -3,13 +3,11 @@
 <h1>Boards</h1>
 
 @for(board <- boards) {
-	<a href="@board.url">@board.title</a> |	
+	<a href="@board.url">@board.title</a> |
 }
 <hr>
 <h1>Found Threads</h1>
 
 @for(thread <- threads) {
-
 	<a href="@thread.url">Thread: @thread.id</a><br>
-	
 }

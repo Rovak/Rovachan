@@ -21,8 +21,10 @@ class ImageDownloader extends Actor {
 
   System.setProperty("http.agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1468.0 Safari/537.36");
 
+  val basePath = Play.application.path.getAbsolutePath() + "/public/data/"
+
   def downloadImage(url: String) = {
-    val fileName = Play.application.path.getAbsolutePath() + "/public/data/" + FilenameUtils.getName(url)
+    val fileName = basePath + FilenameUtils.getName(url)
     val targetFile = new File(fileName)
     if (!targetFile.exists) {
       FileUtils.copyURLToFile(new URL(url), targetFile)

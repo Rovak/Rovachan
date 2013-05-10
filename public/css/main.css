@@ -1,6 +1,31 @@
 #app-header {
-    color: #FFF !important;
-    font-size: 22px;
-    font-weight: 200;
-    padding: 8px 15px;
+	color: #FFF !important;
+	font-size: 22px;
+	font-weight: 200;
+	padding: 8px 15px;
+}
+
+.board {
+	background: #FFE;
+	color: #800000;
+	font-family: arial,helvetica,sans-serif;
+	font-size: 10pt;
+}
+
+img {
+	max-height: 100px;
+}
+
+.thread {
+	width: 30%;
+	float: left;
+	margin: 20px;
+	background: #f0e0d6;
+	padding: 5px;
+
+}
+
+.thread img {
+	float: left;
+	margin: 0 10px 10px 0;
 }
