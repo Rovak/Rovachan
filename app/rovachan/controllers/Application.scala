@@ -34,7 +34,7 @@ object Application extends Controller {
       response.json \\ "posts" map {
         case JsArray(posts) =>
           for (post <- posts) {
-            var comment = new rovachan.core.Comment
+            var comment = new rovachan.core.Comment()
             comment.text = (post \ "com").as[String]
             comments ::= comment
           }
@@ -42,27 +42,35 @@ object Application extends Controller {
     }
   }
 
-  def threads = Action {
+  /**
+   * Retrieve the thread from the given url
+   */
+  def thread(site: String, board: String, id: String) = Action {
 
     Async {
 
-      var threads = List[rovachan.core.Thread]()
-      var boards = Fourchan.getBoards()
+      var comments = List[rovachan.core.Comment]()
 
-      WS.url("http://api.4chan.org/wg/threads.json").get().map { response =>
+      WS.url(s"http://api.4chan.org/$board/res/$id.json").get().map { response =>
 
-        response.json \\ "threads" map {
+        println(response.body.toString())
+
+        response.json \\ "posts" map {
           case JsArray(elements) =>
             for (element <- elements) {
-              var thread = new rovachan.core.Thread
-              thread.id = (element \ "no").as[Int].toString
-              thread.url = s"http://api.4chan.org/wg/res/${thread.id}.json"
-              threads ::= thread
+              var comment = new rovachan.core.Comment()
+              comment.time = (element \ "time").as[Int]
+              comment.text = (element \ "com").as[String]
+              comment.author = (element \ "name").as[String]
+              val fileName = s"${(element \ "tim").asOpt[Long].getOrElse[Long](0)}s.jpg"
+              comment.image = fileName
+              comments ::= comment
             }
         }
 
-        Ok(views.html.threads(threads, boards))
+        comments map (comment => downloadActor ! DownloadImage(comment.image))
 
+        Ok(views.html.thread(comments.sortBy(_.time)))
       }
     }
   }
@@ -79,24 +87,22 @@ object Application extends Controller {
         response.json \\ "threads" map {
           case JsArray(elements) =>
             for (element <- elements) {
-              var thread = new rovachan.core.Thread
+              var thread = new rovachan.core.Thread()
               thread.id = (element \ "no").as[Int].toString
               thread.url = s"http://boards.4chan.org/$boardName/res/${thread.id}"
-
-              var firstComment = new rovachan.core.Comment
-              firstComment.text = (element \ "com").asOpt[String].getOrElse[String]("")
-
-              val fileName = s"${(element \ "tim").asOpt[Long].getOrElse[Long](0)}s.jpg"
-
-              firstComment.image = s"http://0.thumbs.4chan.org/$boardName/thumb/$fileName"
-
-              downloadActor ! DownloadImage(firstComment.image)
-
-              thread.comments ::= firstComment
+              thread.comments ::= {
+                var firstComment = new rovachan.core.Comment
+                firstComment.text = (element \ "com").asOpt[String].getOrElse[String]("")
+                val fileName = s"${(element \ "tim").asOpt[Long].getOrElse[Long](0)}s.jpg"
+                firstComment.image = s"http://0.thumbs.4chan.org/$boardName/thumb/$fileName"
+                firstComment
+              }
 
               threads ::= thread
             }
         }
+
+        threads map (thread => downloadActor ! DownloadImage(thread.comments(0).image))
 
         Ok(views.html.board(threads))
 

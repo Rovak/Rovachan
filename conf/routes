@@ -1,11 +1,7 @@
-# Routes
-# This file defines all application routes (Higher priority routes first)
-# ~~~~
 
-# Home page
-GET     /                           rovachan.controllers.Application.index
-GET     /threads                    rovachan.controllers.Application.threads
-GET     /board/:board               rovachan.controllers.Application.board(board: String)
+GET     /                               rovachan.controllers.Application.index
+GET     /thread/:site/:board/:thread    rovachan.controllers.Application.thread(site: String, board: String, thread: String)
+GET     /board/:board                   rovachan.controllers.Application.board(board: String)
 
 # Data
 GET     /data/boards                rovachan.controllers.Data.boards

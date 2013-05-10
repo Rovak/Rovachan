@@ -1,0 +1,11 @@
+@(comments: List[rovachan.core.Comment])
+
+@import org.apache.commons.io.FilenameUtils
+
+@for(comment <- comments) {
+    <div>
+        <img src="@rovachan.controllers.routes.Files.img(FilenameUtils.getName(comment.image))" style="float: left">
+        @Html(comment.text)
+    </div>
+    <br>
+}

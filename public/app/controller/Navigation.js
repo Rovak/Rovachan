@@ -46,14 +46,12 @@ Ext.define("Rovachan.controller.Navigation", {
                 },
                 url: env.basePath + 'board/' + record.get('id'),
                 renderer: 'html',
-                listeners: {
-                    load: function() {
-                        Ext
-                            .select('.board .thread a', false, tab.getEl().dom)
-                            .on('click', function(ev) {
-                                ev.preventDefault(); alert("gas");
-                            });
-                    }
+                callback: function() {
+                    Ext.select('.board .thread a', false, tab.getEl().dom)
+                        .on('click', function(ev) {
+                            ev.preventDefault();
+                            alert("gas");
+                        });
                 }
             }
         });
