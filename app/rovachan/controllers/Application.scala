@@ -17,6 +17,7 @@ import rovachan.actors.DownloadImage
 import play.api.libs.json.Reads
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import rovachan.core.Board
 
 object Application extends Controller {
 
@@ -60,10 +61,12 @@ object Application extends Controller {
             for (element <- elements) {
               var comment = new rovachan.core.Comment()
               comment.time = (element \ "time").as[Int]
-              comment.text = (element \ "com").as[String]
+              comment.text = (element \ "com").asOpt[String].getOrElse("")
               comment.author = (element \ "name").as[String]
-              val fileName = s"${(element \ "tim").asOpt[Long].getOrElse[Long](0)}s.jpg"
-              comment.image = fileName
+
+              var tim = (element \ "tim").asOpt[Long]
+              if (tim.isDefined) comment.image = s"${tim.get}s.jpg"
+
               comments ::= comment
             }
         }
@@ -88,13 +91,16 @@ object Application extends Controller {
           case JsArray(elements) =>
             for (element <- elements) {
               var thread = new rovachan.core.Thread()
+              thread.board = new Board()
+              thread.board.id = boardName
               thread.id = (element \ "no").as[Int].toString
+              thread.time = (element \ "time").as[Int]
               thread.url = s"http://boards.4chan.org/$boardName/res/${thread.id}"
               thread.comments ::= {
                 var firstComment = new rovachan.core.Comment
                 firstComment.text = (element \ "com").asOpt[String].getOrElse[String]("")
-                val fileName = s"${(element \ "tim").asOpt[Long].getOrElse[Long](0)}s.jpg"
-                firstComment.image = s"http://0.thumbs.4chan.org/$boardName/thumb/$fileName"
+                var tim = (element \ "tim").asOpt[Long]
+                if (tim.isDefined) firstComment.image = s"${tim.get}s.jpg"
                 firstComment
               }
 
@@ -104,7 +110,7 @@ object Application extends Controller {
 
         threads map (thread => downloadActor ! DownloadImage(thread.comments(0).image))
 
-        Ok(views.html.board(threads))
+        Ok(views.html.board(threads.sortBy(_.time)))
 
       }
     }

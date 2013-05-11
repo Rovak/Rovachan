@@ -16,16 +16,23 @@ img {
 	max-height: 100px;
 }
 
-.thread {
+.board .thread {
 	width: 30%;
 	float: left;
 	margin: 20px;
 	background: #f0e0d6;
 	padding: 5px;
-
 }
 
-.thread img {
+.board img {
 	float: left;
 	margin: 0 10px 10px 0;
+}
+
+.comments {
+	padding: 10px;
+}
+
+.comments .comment {
+	margin-top: 10px;
 }

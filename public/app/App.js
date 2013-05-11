@@ -12,6 +12,11 @@ Ext.application({
         'Navigation'
     ],
 
+    models: [
+        'Board',
+        'Thread'
+    ],
+
     launch: function()
     {
         Ext.create("Rovachan.view.Viewport");

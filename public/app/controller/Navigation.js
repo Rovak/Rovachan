@@ -25,11 +25,11 @@ Ext.define("Rovachan.controller.Navigation", {
 
     /**
      * Open a board in a new tab
-     * @param  {[type]} board [description]
-     * @return {[type]}       [description]
      */
     openBoard: function(view, record)
     {
+        var me = this;
+
         if (!record.get("url")) {
             return;
         }
@@ -50,8 +50,35 @@ Ext.define("Rovachan.controller.Navigation", {
                     Ext.select('.board .thread a', false, tab.getEl().dom)
                         .on('click', function(ev) {
                             ev.preventDefault();
-                            alert("gas");
+                            me.openThread(Ext.fly(ev.target).getAttribute('href'));
                         });
+                }
+            }
+        });
+
+        this.getMainPanel().setActiveTab(tab);
+    },
+
+    /**
+     * Open a thread by its given URL
+     *
+     */
+    openThread: function(url)
+    {
+        var tab = this.getMainPanel().add({
+            xtype: 'panel',
+            title: 'thread',
+            bodyStyle: 'overflow-y: scroll',
+            closable: true,
+            loader: {
+                autoLoad: true,
+                loadMask: {
+                    msg: 'Loading Thread...'
+                },
+                url: url,
+                renderer: 'html',
+                callback: function() {
+
                 }
             }
         });

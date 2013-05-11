@@ -1,23 +1,23 @@
 @(threads: List[rovachan.core.Thread])
 
 @import org.apache.commons.io.FilenameUtils
+@import rovachan.controllers.routes._
 
 <div class="board">
-
 	@for(thread <- threads) {
-
 	    <div class="thread">
 
-	    	<a href="@thread.url">Thread: @thread.id</a>
+	    	<a href="http://localhost:9000@Application.thread("4chan", thread.board.id, thread.id)">
+	    	  Thread: @thread.id
+	    	</a>
 	    	<br>
 
 	    	@for(comment <- thread.comments) {
-	    		<img src="@rovachan.controllers.routes.Files.img(FilenameUtils.getName(comment.image))">
+	    	     @if(!comment.image.isEmpty) {
+                    <img src="@Files.img(FilenameUtils.getName(comment.image))">
+                }
 	    		@Html(comment.text)
 	    	}
-
 	    </div>
-
 	}
-
 </div>
