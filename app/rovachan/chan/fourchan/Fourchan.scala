@@ -1,13 +1,13 @@
 package rovachan.chan.fourchan
 
-import rovachan.core.Board
-import scala.concurrent._
-import scala.concurrent.duration._
-import play.api.libs.ws.WS
-import play.api.libs.json.JsObject
-import play.api.libs.json.JsArray
-import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent.Await
+import scala.concurrent.duration.DurationInt
+
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.json.JsArray
+import play.api.libs.json.JsObject
+import play.api.libs.ws.WS
+import rovachan.core.Board
 
 object Fourchan {
 

@@ -1,22 +1,17 @@
 package rovachan.controllers
 
-import scala.concurrent.Future
 import akka.actor.Props
+import akka.actor.actorRef2Scala
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
-import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.JsArray
-import play.api.libs.json.JsObject
-import play.api.libs.ws.Response
 import play.api.libs.ws.WS
 import play.api.mvc.Action
 import play.api.mvc.Controller
-import rovachan.chan.fourchan.Fourchan
-import rovachan.actors.ImageDownloader
 import rovachan.actors.DownloadImage
-import play.api.libs.json.Reads
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
+import rovachan.actors.ImageDownloader
+import rovachan.chan.fourchan.Fourchan
 import rovachan.core.Board
 
 object Application extends Controller {

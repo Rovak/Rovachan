@@ -1,18 +1,13 @@
 package rovachan.actors
 
-import akka.actor.Actor
-import org.apache.commons.io.FileSystemUtils
+import java.io.File
+import java.net.URL
+
 import org.apache.commons.io.FileUtils
-import java.net.URL
-import java.io.File
 import org.apache.commons.io.FilenameUtils
+
+import akka.actor.Actor
 import play.api.Play
-import sys.process._
-import java.net.URL
-import java.io.File
-import java.io.IOException
-import java.io.FileOutputStream
-import java.io.BufferedInputStream
 import play.api.Play.current
 
 case class DownloadImage(url: String)

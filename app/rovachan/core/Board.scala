@@ -1,7 +1,7 @@
 package rovachan.core
 
 import play.api.libs.json.Json
-import views.html.board
+import play.api.libs.json.Json._
 
 class Board {
 
