@@ -105,7 +105,6 @@ object Application extends Controller {
         threads map (thread => downloadActor ! DownloadImage(thread.comments(0).image))
 
         Ok(views.html.board(threads.sortBy(_.time)))
-
       }
     }
   }

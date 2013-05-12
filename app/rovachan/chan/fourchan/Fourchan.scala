@@ -36,7 +36,6 @@ object Fourchan {
             boards ::= board
 
           }
-        case JsObject(obj) => println("object")
       }
     }
 

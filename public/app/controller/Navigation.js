@@ -61,7 +61,6 @@ Ext.define("Rovachan.controller.Navigation", {
 
     /**
      * Open a thread by its given URL
-     *
      */
     openThread: function(url)
     {
@@ -70,6 +69,22 @@ Ext.define("Rovachan.controller.Navigation", {
             title: 'thread',
             bodyStyle: 'overflow-y: scroll',
             closable: true,
+            threadModel: {
+                thread: 100
+            },
+            dockedItems:  [
+                {
+                    dock: 'bottom',
+                    xtype: 'toolbar',
+                    items: [
+                        '->',
+                        {
+                            text: 'Watch thread',
+                            action: 'watch-thread'
+                        }
+                    ]
+                }
+            ],
             loader: {
                 autoLoad: true,
                 loadMask: {

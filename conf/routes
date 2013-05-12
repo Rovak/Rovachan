@@ -1,12 +1,18 @@
 
+# Home
 GET     /                               rovachan.controllers.Application.index
+
+# Boards
 GET     /thread/:site/:board/:thread    rovachan.controllers.Application.thread(site: String, board: String, thread: String)
 GET     /board/:board                   rovachan.controllers.Application.board(board: String)
+GET     /data/boards                    rovachan.controllers.Data.boards
 
-# Data
-GET     /data/boards                rovachan.controllers.Data.boards
 
-GET     /data/img/:path            rovachan.controllers.Files.img(path: String)
+# Files
+GET     /data/img/:path                 rovachan.controllers.Files.img(path: String)
 
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+# Thread Watcher
+POST     /watcher/add                    rovachan.controllers.Watcher.addThread
+
+# Static Resources
+GET     /assets/*file                   controllers.Assets.at(path="/public", file)
