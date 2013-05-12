@@ -19,19 +19,21 @@ import play.api.libs.json.JsValue
 import play.api.libs.json.Json
 import play.api.libs.json.Json.toJsFieldJsValueWrapper
 
+trait JsonMessage {
+  def toJson: JsValue
+}
 case class Join()
 case class Connected(enumerator: Enumerator[JsValue])
 case class CannotConnect(msg: String)
 case class Broadcast(message: String) {
   def toJson = Json.obj("message" -> message)
 }
-case class UpdateStatus(message: String) {
+case class UpdateStatus(message: String) extends JsonMessage {
   def toJson = Json.obj(
     "action" -> "status",
     "message" -> message)
 }
-
-case class UpdateImage(img: String) {
+case class UpdateImage(img: String) extends JsonMessage {
   def toJson = Json.obj(
     "action" -> "updateImage",
     "img" -> img)
@@ -55,7 +57,7 @@ object LiveActor {
         actor ! UpdateStatus("Connected!")
 
         val iteratee = Iteratee.foreach[JsValue] { event =>
-
+          // On Message
         }.mapDone { _ =>
           // On Connection Closed
         }
@@ -85,11 +87,8 @@ class LiveActor extends Actor {
     case Broadcast(message) => {
       liveChannel.push(Json.obj("message" -> message))
     }
-    case status: UpdateStatus => {
-      liveChannel.push(status.toJson)
-    }
-    case img: UpdateImage => {
-      liveChannel.push(img.toJson)
+    case jsonMessage: JsonMessage => {
+      liveChannel.push(jsonMessage.toJson)
     }
   }
 }

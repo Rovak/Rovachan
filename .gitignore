@@ -16,4 +16,4 @@ dist
 .target
 bin
 .cache
-public/data
+/data

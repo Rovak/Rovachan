@@ -1,14 +1,14 @@
-@(comments: List[rovachan.core.Comment])
+@(thread: rovachan.core.Thread)
 
 @import org.apache.commons.io.FilenameUtils
 @import rovachan.controllers.routes._
 
 <div class="board">
     <div class="comments">
-        @for(comment <- comments) {
+        @for(comment <- thread.comments) {
             <div class="comment">
                 @if(!comment.image.isEmpty) {
-                    <img src="@Files.img(FilenameUtils.getName(comment.image))" style="float: left">
+                    <img src="@Files.img(FilenameUtils.getName(comment.imageName))" style="float: left">
                 }
                 @Html(comment.text)
             </div>
