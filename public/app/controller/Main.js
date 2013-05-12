@@ -6,6 +6,10 @@ Ext.define('Rovachan.controller.Main', {
 
 	extend: 'Ext.app.Controller',
 
+	views: [
+		'Thread'
+	],
+
 	init: function()
 	{
 		var me = this;
@@ -13,9 +17,8 @@ Ext.define('Rovachan.controller.Main', {
 		this.control({
 			'button[action=watch-thread]' : {
 				click: function(button) {
-					var panel = button.up('panel[title=thread]');
-
-					me.watchThread(panel.threadModel.thread);
+					var panel = button.up('thread');
+					me.watchThread(panel.model);
 				}
 			}
 		});
@@ -29,7 +32,8 @@ Ext.define('Rovachan.controller.Main', {
 	watchThread: function(thread)
 	{
 		Rovachan.postJson('watcher/add', {
-			thread: thread
+			thread: thread.getId(),
+			board: thread.getBoard().getId()
 		});
 	}
 });

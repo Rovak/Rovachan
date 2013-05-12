@@ -7,7 +7,7 @@
 	@for(thread <- threads) {
 	    <div class="thread">
 
-	    	<a href="http://localhost:9000@Application.thread("4chan", thread.board.id, thread.id)">
+	    	<a href="http://localhost:9000@Application.thread("4chan", thread.board.id, thread.id)" data-thread="@thread.toJson">
 	    	  Thread: @thread.id
 	    	</a>
 	    	<br>

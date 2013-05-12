@@ -62,7 +62,6 @@ object Application extends Controller {
 
               var tim = (element \ "tim").asOpt[Long]
               if (tim.isDefined) comment.image = s"${tim.get}s.jpg"
-
               comments ::= comment
             }
         }

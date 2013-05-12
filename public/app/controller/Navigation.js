@@ -50,7 +50,10 @@ Ext.define("Rovachan.controller.Navigation", {
                     Ext.select('.board .thread a', false, tab.getEl().dom)
                         .on('click', function(ev) {
                             ev.preventDefault();
-                            me.openThread(Ext.fly(ev.target).getAttribute('href'));
+                            var el = Ext.fly(ev.target);
+                            var url = el.getAttribute('href');
+                            var json = el.getAttribute('data-thread');
+                            me.openThread(url, Ext.create('Rovachan.model.Thread', JSON.parse(json)));
                         });
                 }
             }
@@ -62,40 +65,13 @@ Ext.define("Rovachan.controller.Navigation", {
     /**
      * Open a thread by its given URL
      */
-    openThread: function(url)
+    openThread: function(url, thread)
     {
         var tab = this.getMainPanel().add({
-            xtype: 'panel',
-            title: 'thread',
-            bodyStyle: 'overflow-y: scroll',
-            closable: true,
-            threadModel: {
-                thread: 100
-            },
-            dockedItems:  [
-                {
-                    dock: 'bottom',
-                    xtype: 'toolbar',
-                    items: [
-                        '->',
-                        {
-                            text: 'Watch thread',
-                            action: 'watch-thread'
-                        }
-                    ]
-                }
-            ],
-            loader: {
-                autoLoad: true,
-                loadMask: {
-                    msg: 'Loading Thread...'
-                },
-                url: url,
-                renderer: 'html',
-                callback: function() {
-
-                }
-            }
+            xtype: 'thread',
+            title: 'Thread ' + thread.getId(),
+            url: url,
+            model: thread
         });
 
         this.getMainPanel().setActiveTab(tab);

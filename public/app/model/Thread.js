@@ -4,7 +4,8 @@ Ext.define('Rovachan.model.Thread', {
     fields: [
         { name: 'id',       type: 'string' },
         { name: 'url',      type: 'string' },
-        { name: 'title',    type: 'string' }
+        { name: 'title',    type: 'string' },
+        { name: 'board' }
     ],
 
     getId: function()
@@ -20,5 +21,10 @@ Ext.define('Rovachan.model.Thread', {
     getUrl: function()
     {
         return this.get('url');
+    },
+
+    getBoard: function()
+    {
+        return Ext.create('Rovachan.model.Board', this.get('board'));
     }
 });

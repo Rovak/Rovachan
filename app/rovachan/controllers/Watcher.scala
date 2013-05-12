@@ -22,9 +22,9 @@ object Watcher extends Controller {
 
     try {
 
-      val threadId = (request.body \ "thread").as[Int]
+      val threadId = (request.body \ "thread").as[String]
 
-      watcherActor ! AddThread(rovachan.core.Thread(threadId.toString))
+      watcherActor ! AddThread(rovachan.core.Thread(threadId))
 
       Ok(Json.obj("result" -> s"added thread $threadId"))
     } catch {
