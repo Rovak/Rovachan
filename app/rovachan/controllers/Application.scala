@@ -50,8 +50,6 @@ object Application extends Controller {
 
       WS.url(s"http://api.4chan.org/$board/res/$id.json").get().map { response =>
 
-        println(response.body.toString())
-
         response.json \\ "posts" map {
           case JsArray(elements) =>
             for (element <- elements) {
@@ -66,7 +64,7 @@ object Application extends Controller {
             }
         }
 
-        comments map (comment => downloadActor ! DownloadImage(comment.image))
+        comments map (comment => downloadActor ! DownloadImage(s"http://0.thumbs.4chan.org/$board/thumb/${comment.image}"))
 
         Ok(views.html.thread(comments.sortBy(_.time)))
       }
@@ -101,7 +99,7 @@ object Application extends Controller {
             }
         }
 
-        threads map (thread => downloadActor ! DownloadImage(thread.comments(0).image))
+        threads map (thread => downloadActor ! DownloadImage(s"http://0.thumbs.4chan.org/${thread.board.id}/thumb/${thread.comments(0).image}"))
 
         Ok(views.html.board(threads.sortBy(_.time)))
       }
