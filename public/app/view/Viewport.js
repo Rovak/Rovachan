@@ -57,6 +57,7 @@ Ext.define('Rovachan.view.Viewport', {
                 '->',
                 {
                     xtype: 'tbtext',
+                    itemId: 'status-text',
                     text: 'Loading...'
                 }
             ]

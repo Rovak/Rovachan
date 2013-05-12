@@ -14,6 +14,8 @@ import rovachan.actors.ImageDownloader
 import rovachan.chan.fourchan.Fourchan
 import rovachan.core.Board
 import rovachan.core.Comment
+import play.api.mvc.WebSocket
+import play.api.libs.json.JsValue
 
 object Application extends Controller {
 
@@ -71,38 +73,20 @@ object Application extends Controller {
     }
   }
 
-  def board(boardName: String) = Action {
+  def board(boardId: String) = Action {
 
-    Async {
+    var threads = Fourchan.getThreads(Board(boardId))
 
-      var threads = List[rovachan.core.Thread]()
-      var boards = Fourchan.getBoards()
+    threads map (thread => downloadActor ! DownloadImage(s"http://0.thumbs.4chan.org/${thread.board.id}/thumb/${thread.comments(0).image}"))
 
-      WS.url(s"http://api.4chan.org/$boardName/catalog.json").get().map { response =>
+    Ok(views.html.board(threads))
 
-        response.json \\ "threads" map {
-          case JsArray(elements) =>
-            for (element <- elements) {
-              var thread = rovachan.core.Thread((element \ "no").as[Int].toString)
-              thread.board = Board(boardName)
-              thread.time = (element \ "time").as[Int]
-              thread.url = s"http://boards.4chan.org/$boardName/res/${thread.id}"
-              thread.comments ::= {
-                var firstComment = new rovachan.core.Comment
-                firstComment.text = (element \ "com").asOpt[String].getOrElse[String]("")
-                var tim = (element \ "tim").asOpt[Long]
-                if (tim.isDefined) firstComment.image = s"${tim.get}s.jpg"
-                firstComment
-              }
+  }
 
-              threads ::= thread
-            }
-        }
-
-        threads map (thread => downloadActor ! DownloadImage(s"http://0.thumbs.4chan.org/${thread.board.id}/thumb/${thread.comments(0).image}"))
-
-        Ok(views.html.board(threads.sortBy(_.time)))
-      }
-    }
+  /**
+   * Registers a new socket which will listen to broadcasted messages
+   */
+  def live = WebSocket.async[JsValue] { request =>
+    rovachan.actors.LiveActor.join()
   }
 }

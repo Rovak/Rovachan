@@ -43,4 +43,33 @@ object Fourchan {
 
     boards
   }
+
+  def getThreads(board: Board): List[rovachan.core.Thread] = {
+    var threads = List[rovachan.core.Thread]()
+    val req = WS.url(s"http://api.4chan.org/${board.id}/catalog.json").get().map { response =>
+
+      response.json \\ "threads" map {
+        case JsArray(elements) =>
+          for (element <- elements) {
+            var thread = rovachan.core.Thread((element \ "no").as[Int].toString)
+            thread.board = board
+            thread.time = (element \ "time").as[Int]
+            thread.url = s"http://boards.4chan.org/${board.id}/res/${thread.id}"
+            thread.comments ::= {
+              var firstComment = new rovachan.core.Comment
+              firstComment.text = (element \ "com").asOpt[String].getOrElse[String]("")
+              var tim = (element \ "tim").asOpt[Long]
+              if (tim.isDefined) firstComment.image = s"${tim.get}s.jpg"
+              firstComment
+            }
+
+            threads ::= thread
+          }
+      }
+    }
+
+    Await.result(req, timeout)
+
+    threads.sortBy(_.time)
+  }
 }

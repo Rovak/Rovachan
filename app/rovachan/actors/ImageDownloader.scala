@@ -22,6 +22,7 @@ class ImageDownloader extends Actor {
     val fileName = basePath + FilenameUtils.getName(url)
     val targetFile = new File(fileName)
     if (!targetFile.exists) {
+      context.actorFor("../live") ! UpdateStatus("Downloading file: " + targetFile.getName)
       FileUtils.copyURLToFile(new URL(url), targetFile)
     }
   }

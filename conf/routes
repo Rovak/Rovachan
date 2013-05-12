@@ -7,6 +7,7 @@ GET     /thread/:site/:board/:thread    rovachan.controllers.Application.thread(
 GET     /board/:board                   rovachan.controllers.Application.board(board: String)
 GET     /data/boards                    rovachan.controllers.Data.boards
 
+GET     /live                           rovachan.controllers.Application.live
 
 # Files
 GET     /data/img/:path                 rovachan.controllers.Files.img(path: String)
