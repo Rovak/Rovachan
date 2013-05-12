@@ -1,6 +1,6 @@
 package rovachan.core
 
-class Comment {
+case class Comment() {
 
   var author: String = ""
   var text: String = ""

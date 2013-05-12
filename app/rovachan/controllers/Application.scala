@@ -13,6 +13,7 @@ import rovachan.actors.DownloadImage
 import rovachan.actors.ImageDownloader
 import rovachan.chan.fourchan.Fourchan
 import rovachan.core.Board
+import rovachan.core.Comment
 
 object Application extends Controller {
 
@@ -23,14 +24,14 @@ object Application extends Controller {
   }
 
   def scrapeThread(url: String) = {
-    var comments = List[rovachan.core.Comment]()
+    var comments = List[Comment]()
 
     WS.url(url).get().map { response =>
 
       response.json \\ "posts" map {
         case JsArray(posts) =>
           for (post <- posts) {
-            var comment = new rovachan.core.Comment()
+            var comment = Comment()
             comment.text = (post \ "com").as[String]
             comments ::= comment
           }
@@ -45,7 +46,7 @@ object Application extends Controller {
 
     Async {
 
-      var comments = List[rovachan.core.Comment]()
+      var comments = List[Comment]()
 
       WS.url(s"http://api.4chan.org/$board/res/$id.json").get().map { response =>
 
@@ -54,7 +55,7 @@ object Application extends Controller {
         response.json \\ "posts" map {
           case JsArray(elements) =>
             for (element <- elements) {
-              var comment = new rovachan.core.Comment()
+              var comment = new Comment()
               comment.time = (element \ "time").as[Int]
               comment.text = (element \ "com").asOpt[String].getOrElse("")
               comment.author = (element \ "name").as[String]
@@ -85,10 +86,8 @@ object Application extends Controller {
         response.json \\ "threads" map {
           case JsArray(elements) =>
             for (element <- elements) {
-              var thread = new rovachan.core.Thread()
-              thread.board = new Board()
-              thread.board.id = boardName
-              thread.id = (element \ "no").as[Int].toString
+              var thread = rovachan.core.Thread((element \ "no").as[Int].toString)
+              thread.board = Board(boardName)
               thread.time = (element \ "time").as[Int]
               thread.url = s"http://boards.4chan.org/$boardName/res/${thread.id}"
               thread.comments ::= {

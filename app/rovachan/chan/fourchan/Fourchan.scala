@@ -27,11 +27,12 @@ object Fourchan {
       response.json \\ "boards" map {
         case JsArray(elements) =>
           for (element <- elements) {
-            var board = new Board
-            board.title = (element \ "title").as[String]
-            board.url = s"http://boards.4chan.org/${(element \ "board").as[String]}/"
+            var board = Board(
+              (element \ "board").as[String],
+              (element \ "title").as[String],
+              s"http://boards.4chan.org/${(element \ "board").as[String]}/")
+
             board.apiUrl = s"http(s)://api.4chan.org/${(element \ "board").as[String]}/catalog.json"
-            board.id = (element \ "board").as[String]
             boards ::= board
 
           }

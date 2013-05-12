@@ -1,12 +1,10 @@
 package rovachan.core
 
-class Thread {
+case class Thread(id: String) {
 
-  var id: String = null
   var url: String = null
   var board: Board = null
   var time: Int = 0
 
   var comments = List[Comment]()
-
 }
