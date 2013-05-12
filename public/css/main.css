@@ -36,3 +36,7 @@ img {
 .comments .comment {
 	margin-top: 10px;
 }
+
+.clear {
+	clear: both;
+}

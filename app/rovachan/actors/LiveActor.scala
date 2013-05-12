@@ -31,6 +31,12 @@ case class UpdateStatus(message: String) {
     "message" -> message)
 }
 
+case class UpdateImage(img: String) {
+  def toJson = Json.obj(
+    "action" -> "updateImage",
+    "img" -> img)
+}
+
 object LiveActor {
 
   implicit val timeout = Timeout(2 second)
@@ -82,6 +88,8 @@ class LiveActor extends Actor {
     case status: UpdateStatus => {
       liveChannel.push(status.toJson)
     }
+    case img: UpdateImage => {
+      liveChannel.push(img.toJson)
+    }
   }
-
 }

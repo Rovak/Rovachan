@@ -24,6 +24,7 @@ class ImageDownloader extends Actor {
     if (!targetFile.exists) {
       context.actorFor("../live") ! UpdateStatus("Downloading file: " + targetFile.getName)
       FileUtils.copyURLToFile(new URL(url), targetFile)
+      context.actorFor("../live") ! UpdateImage("/data/img/" + targetFile.getName)
     }
   }
 

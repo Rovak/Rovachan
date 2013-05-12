@@ -60,5 +60,15 @@ Ext.define('Rovachan.controller.Live', {
     onStatus: function(data)
     {
         this.getStatusText().setText(data.message);
+    },
+
+    /**
+     * Update an image
+     */
+    onUpdateImage: function(data)
+    {
+        Ext.select("img[src=" + data.img + "]").set({
+            src: data.img + "?v1"
+        });
     }
 });
