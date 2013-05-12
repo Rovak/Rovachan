@@ -12,6 +12,11 @@ object Files extends Controller {
   val projectRoot = Play.application.path
 
   def img(path: String) = Action {
-    Ok.sendFile(new File(projectRoot + "/public/data/" + path), true)
+    val imgFile = new File(projectRoot + "/public/data/" + path)
+    if (imgFile.exists) {
+      Ok.sendFile(imgFile, true)
+    } else {
+      NotFound(imgFile.getName + " not found")
+    }
   }
 }
