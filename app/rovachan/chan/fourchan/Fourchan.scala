@@ -17,6 +17,9 @@ object Fourchan {
 
   protected var boards = List[Board]()
 
+  /**
+   * Retrieve all boards from 4chan
+   */
   def getBoards(): List[Board] = {
 
     if (!boards.isEmpty)
@@ -44,31 +47,35 @@ object Fourchan {
     boards
   }
 
-  def getThreads(board: Board): List[rovachan.core.Thread] = {
+  /**
+   * Retrieve all threads from the given board
+   */
+  def getThreads(boardObj: Board): List[rovachan.core.Thread] = {
     var threads = List[rovachan.core.Thread]()
-    val req = WS.url(s"http://api.4chan.org/${board.id}/catalog.json").get().map { response =>
+    val req = WS.url(s"http://api.4chan.org/${boardObj.id}/catalog.json").get().map { response =>
 
       response.json \\ "threads" map {
-        case JsArray(elements) =>
+        case JsArray(elements) => {
           for (element <- elements) {
-            var thread = rovachan.core.Thread((element \ "no").as[Int].toString)
-            thread.board = board
-            thread.time = (element \ "time").as[Int]
-            thread.url = s"http://boards.4chan.org/${board.id}/res/${thread.id}"
-            thread.comments ::= {
-              var firstComment = new rovachan.core.Comment
-              firstComment.text = (element \ "com").asOpt[String].getOrElse[String]("")
-
-              var tim = (element \ "tim").asOpt[Long]
-              if (tim.isDefined) {
-                firstComment.image = tim.get.toString
-                firstComment.imageExt = (element \ "ext").as[String]
-              }
-              firstComment
+            var parentThread = new rovachan.core.Thread((element \ "no").as[Int].toString) {
+              board = boardObj
+              time = (element \ "time").as[Int]
+              url = s"http://boards.4chan.org/${board.id}/res/$id"
             }
-
-            threads ::= thread
+            parentThread.comments ::= {
+              var tim = (element \ "tim").asOpt[Long]
+              new rovachan.core.Comment {
+                thread = parentThread
+                text = (element \ "com").asOpt[String].getOrElse[String]("")
+                if (tim.isDefined) {
+                  image = tim.get.toString
+                  imageExt = (element \ "ext").as[String]
+                }
+              }
+            }
+            threads ::= parentThread
           }
+        }
       }
     }
 
@@ -85,31 +92,33 @@ object Fourchan {
    * @return thread object with comments
    */
   def getThread(threadId: String, board: Board): rovachan.core.Thread = {
-    var thread = rovachan.core.Thread(threadId)
-    thread.board = board
+    var threadObj = rovachan.core.Thread(threadId)
+    threadObj.board = board
 
     val req = WS.url(s"http://api.4chan.org/${board.id}/res/$threadId.json").get().map { response =>
 
       response.json \\ "posts" map {
         case JsArray(elements) =>
           for (element <- elements) {
-            var comment = new Comment()
-            comment.time = (element \ "time").as[Int]
-            comment.text = (element \ "com").asOpt[String].getOrElse("")
-            comment.author = (element \ "name").asOpt[String].getOrElse("unknown")
+            var comment = new Comment {
+              thread = threadObj
+              time = (element \ "time").as[Int]
+              text = (element \ "com").asOpt[String].getOrElse("")
+              author = (element \ "name").asOpt[String].getOrElse("unknown")
+            }
 
             var tim = (element \ "tim").asOpt[Long]
             if (tim.isDefined) {
               comment.image = tim.get.toString
               comment.imageExt = (element \ "ext").as[String]
             }
-            thread.comments ::= comment
+            threadObj.comments ::= comment
           }
       }
     }
     Await.result(req, timeout)
 
-    thread.comments = thread.comments.sortBy(_.time)
-    thread
+    threadObj.comments = threadObj.comments.sortBy(_.time)
+    threadObj
   }
 }

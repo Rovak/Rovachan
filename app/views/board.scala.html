@@ -14,7 +14,7 @@
 
 	    	@for(comment <- thread.comments) {
 	    	     @if(!comment.image.isEmpty) {
-                    <img src="@Files.img(FilenameUtils.getName(comment.thumbName))">
+                    <img src="@Files.img(comment.imgFolder + comment.thumbName)">
                 }
 	    		@Html(comment.text)
 	    	}

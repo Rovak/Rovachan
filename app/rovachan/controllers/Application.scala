@@ -1,5 +1,7 @@
 package rovachan.controllers
 
+import akka.routing._
+import akka.routing.RoundRobinRouter
 import akka.actor.Props
 import akka.actor.actorRef2Scala
 import play.api.Play.current
@@ -9,17 +11,20 @@ import play.api.libs.json.JsArray
 import play.api.libs.ws.WS
 import play.api.mvc.Action
 import play.api.mvc.Controller
-import rovachan.actors.DownloadImage
+import rovachan.actors.DownloadImageUrl
 import rovachan.actors.ImageDownloader
 import rovachan.chan.fourchan.Fourchan
 import rovachan.core.Board
 import rovachan.core.Comment
 import play.api.mvc.WebSocket
 import play.api.libs.json.JsValue
+import rovachan.actors.DownloadImage
+import rovachan.actors.DownloadImageThumb
 
 object Application extends Controller {
 
-  var downloadActor = Akka.system.actorOf(Props[ImageDownloader], "imageDownloader")
+  var downloadActor = Akka.system.actorOf(Props[ImageDownloader].withRouter(
+    RoundRobinRouter(nrOfInstances = 5)), "imageDownloader")
 
   def index = Action {
     Ok(views.html.app())
@@ -33,8 +38,9 @@ object Application extends Controller {
       response.json \\ "posts" map {
         case JsArray(posts) =>
           for (post <- posts) {
-            var comment = Comment()
-            comment.text = (post \ "com").as[String]
+            var comment = new Comment {
+              text = (post \ "com").as[String]
+            }
             comments ::= comment
           }
       }
@@ -47,7 +53,7 @@ object Application extends Controller {
   def thread(site: String, board: String, id: String) = Action {
 
     var thread = Fourchan.getThread(id, Board(board))
-    thread.comments map (comment => downloadActor ! DownloadImage(s"http://images.4chan.org/${thread.board.id}/src/${comment.imageName}"))
+    thread.comments map (comment => downloadActor ! DownloadImage(comment))
 
     Ok(views.html.thread(thread))
 
@@ -57,8 +63,7 @@ object Application extends Controller {
 
     var threads = Fourchan.getThreads(Board(boardId))
 
-    threads map (thread => downloadActor ! DownloadImage(s"http://0.thumbs.4chan.org/${thread.board.id}/thumb/${thread.comments(0).thumbName}"))
-    //threads map (thread => downloadActor ! DownloadImage(s"http://images.4chan.org/${thread.board.id}/src/${thread.comments(0).imageName}"))
+    threads map (thread => downloadActor ! DownloadImageThumb(thread.comments(0)))
 
     Ok(views.html.board(threads))
 

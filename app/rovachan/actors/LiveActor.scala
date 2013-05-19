@@ -45,9 +45,6 @@ object LiveActor {
 
   lazy val actor = Akka.system.actorOf(Props[LiveActor], "live")
 
-  /**
-   * Join Live Update Channel
-   */
   def join(): scala.concurrent.Future[(Iteratee[JsValue, _], Enumerator[JsValue])] = {
 
     (actor ? Join()) map {
@@ -73,9 +70,6 @@ object LiveActor {
   }
 }
 
-/**
- * Logs messages
- */
 class LiveActor extends Actor {
 
   val (chatEnumerator, liveChannel) = Concurrent.broadcast[JsValue]

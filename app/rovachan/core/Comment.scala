@@ -8,7 +8,10 @@ case class Comment() {
   var imageExt: String = ""
   def imageName = s"$image$imageExt"
   var time: Int = 0
+  var thread: Thread = null
 
   def thumbName = s"${image}s.jpg"
+  def imgFolder = s"${thread.board.id}/${thread.id}/"
+  def localImageUrl = s"$imgFolder$imageName"
 
 }

@@ -8,7 +8,7 @@
         @for(comment <- thread.comments) {
             <div class="comment">
                 @if(!comment.image.isEmpty) {
-                    <img src="@Files.img(FilenameUtils.getName(comment.imageName))" style="float: left">
+                    <img src="@Files.img(comment.localImageUrl)" style="float: left">
                 }
                 @Html(comment.text)
             </div>
