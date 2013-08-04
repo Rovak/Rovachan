@@ -11,7 +11,7 @@ case class Comment() {
   var thread: Thread = null
 
   def thumbName = s"${image}s.jpg"
-  def imgFolder = s"${thread.board.id}/${thread.id}/"
+  def imgFolder = thread.imgFolder
   def localImageUrl = s"$imgFolder$imageName"
 
 }

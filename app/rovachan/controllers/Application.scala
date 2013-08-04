@@ -52,7 +52,7 @@ object Application extends Controller {
    */
   def thread(site: String, board: String, id: String) = Action {
 
-    var thread = Fourchan.getThread(id, Board(board))
+    val thread = Fourchan.getThread(id, Board(board))
     thread.comments map (comment => downloadActor ! DownloadImage(comment))
 
     Ok(views.html.thread(thread))
@@ -61,7 +61,7 @@ object Application extends Controller {
 
   def board(boardId: String) = Action {
 
-    var threads = Fourchan.getThreads(Board(boardId))
+    val threads = Fourchan.getThreads(Board(boardId))
 
     threads map (thread => downloadActor ! DownloadImageThumb(thread.comments(0)))
 

@@ -10,10 +10,12 @@ GET     /data/boards                    rovachan.controllers.Data.boards
 GET     /live                           rovachan.controllers.Application.live
 
 # Files
-GET     /data/img/:path                 rovachan.controllers.Files.img(path: String)
+GET     /data/img/:path                 rovachan.controllers.Files.cache(path: String)
+GET     /data/cache/:path               rovachan.controllers.Files.cache(path: String)
+GET     /data/archive/:path             rovachan.controllers.Files.archive(path: String)
 
 # Thread Watcher
-POST     /watcher/add                    rovachan.controllers.Watcher.addThread
+POST     /watcher/add                   rovachan.controllers.Watcher.addThread
 
 # Static Resources
 GET     /assets/*file                   controllers.Assets.at(path="/public", file)

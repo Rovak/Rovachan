@@ -47,7 +47,7 @@ object LiveActor {
 
   def join(): scala.concurrent.Future[(Iteratee[JsValue, _], Enumerator[JsValue])] = {
 
-    (actor ? Join()) map {
+    actor ? Join() map {
 
       case Connected(enumerator) =>
 

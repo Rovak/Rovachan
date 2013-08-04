@@ -25,9 +25,7 @@ Ext.define('Rovachan.view.Thread', {
         Ext.applyIf(this, {
             loader: {
                 autoLoad: true,
-                loadMask: {
-                    msg: 'Loading Thread...'
-                },
+                loadMask: { msg: 'Loading Thread...' },
                 url: this.url,
                 renderer: 'html'
             }

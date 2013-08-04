@@ -6,17 +6,23 @@ import play.api.Play
 import play.api.Play.current
 import play.api.mvc.Action
 import play.api.mvc.Controller
+import rovachan.Env
 
 object Files extends Controller {
 
-  val projectRoot = Play.application.path
-
-  def img(path: String) = Action {
-    val imgFile = new File(projectRoot + "/data/" + path)
-    if (imgFile.exists) {
-      Ok.sendFile(imgFile, true)
+  def returnFile(file: java.io.File) = {
+    if (file.exists) {
+      Ok.sendFile(file, true)
     } else {
-      NotFound(imgFile.getName + " not found")
+      NotFound(file.getName + " not found")
     }
+  }
+
+  def cache(path: String) = Action {
+    returnFile(new File(Env.cacheFolder, path))
+  }
+
+  def archive(path: String) = Action {
+    returnFile(new File(Env.archiveFolder, path))
   }
 }

@@ -54,7 +54,6 @@ Ext.define('Rovachan.controller.Live', {
     },
 
     /**
-     * Simpel status updater
      * @param {SimpleObject} data
      */
     onStatus: function(data)
@@ -67,9 +66,7 @@ Ext.define('Rovachan.controller.Live', {
      */
     onUpdateImage: function(data)
     {
-	console.log("img[src=" + data.img + "]");
-        Ext.select("img[src=" + data.img + "]").set({
-            src: data.img + "?v1"
-        });
+        var url = data.img;
+        Ext.select("img[src=" + url + "]").set({ src: url + "?v1" });
     }
 });
