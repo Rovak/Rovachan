@@ -75,14 +75,11 @@ class LiveActor extends Actor {
   val (chatEnumerator, liveChannel) = Concurrent.broadcast[JsValue]
 
   def receive = {
-    case Join() => {
+    case Join() =>
       sender ! Connected(chatEnumerator)
-    }
-    case Broadcast(message) => {
+    case Broadcast(message) =>
       liveChannel.push(Json.obj("message" -> message))
-    }
-    case jsonMessage: JsonMessage => {
+    case jsonMessage: JsonMessage =>
       liveChannel.push(jsonMessage.toJson)
-    }
   }
 }
