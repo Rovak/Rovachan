@@ -25,8 +25,9 @@ object Watcher extends Controller {
     try {
 
       val threadId = (request.body \ "thread").as[String]
-      val thread = Thread(threadId)
-      thread.board = Board((request.body \ "board").as[String])
+      val thread = Thread(
+        threadId,
+        Board((request.body \ "board").as[String]))
 
       watcherActor ! AddThread(thread)
 

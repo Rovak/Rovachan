@@ -23,6 +23,8 @@ import rovachan.actors.DownloadImageThumb
 
 object Application extends Controller {
 
+  val chan = new Fourchan
+
   var downloadActor = Akka.system.actorOf(Props[ImageDownloader].withRouter(
     RoundRobinRouter(nrOfInstances = 5)), "imageDownloader")
 
@@ -30,43 +32,22 @@ object Application extends Controller {
     Ok(views.html.app())
   }
 
-  def scrapeThread(url: String) = {
-    var comments = List[Comment]()
-
-    WS.url(url).get().map { response =>
-
-      response.json \\ "posts" map {
-        case JsArray(posts) =>
-          for (post <- posts) {
-            var comment = new Comment {
-              text = (post \ "com").as[String]
-            }
-            comments ::= comment
-          }
-      }
-    }
-  }
-
   /**
    * Retrieve the thread from the given url
    */
-  def thread(site: String, board: String, id: String) = Action {
+  def thread(site: String, board: String, id: String) = Action.async {
 
-    val thread = Fourchan.getThread(id, Board(board))
-    thread.comments map (comment => downloadActor ! DownloadImage(comment))
-
-    Ok(views.html.thread(thread))
-
+    chan.thread(id, Board(board)).map { thread =>
+      thread.comments map (comment => downloadActor ! DownloadImage(comment))
+      Ok(views.html.thread(thread))
+    }
   }
 
-  def board(boardId: String) = Action {
-
-    val threads = Fourchan.getThreads(Board(boardId))
-
-    threads map (thread => downloadActor ! DownloadImageThumb(thread.comments(0)))
-
-    Ok(views.html.board(threads))
-
+  def board(boardId: String) = Action.async {
+    chan.threads(Board(boardId)).map { threads =>
+      threads map (thread => downloadActor ! DownloadImageThumb(thread.comments(0)))
+      Ok(views.html.board(threads))
+    }
   }
 
   /**

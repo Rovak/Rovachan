@@ -10,6 +10,7 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     jdbc,
     anorm,
+    cache,
     "commons-io" % "commons-io" % "2.1"
   )
 
