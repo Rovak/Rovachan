@@ -35,7 +35,7 @@ class ImageDownloader extends Actor {
   def downloadImage(url: String, targetFile: java.io.File) = {
     if (!targetFile.exists) {
       try {
-        liveActor! UpdateStatus(s"Downloading file: ${targetFile.getName} to ${targetFile.getAbsolutePath}")
+        liveActor ! UpdateStatus(s"Downloading file: ${targetFile.getName} to ${targetFile.getAbsolutePath}")
         FileUtils.copyURLToFile(new URL(url), targetFile)
         liveActor! UpdateImage(routes.Files.cache(targetFile.getAbsolutePath.substring(Env.cacheFolder.size)).toString)
       } catch {

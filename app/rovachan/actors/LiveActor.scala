@@ -55,7 +55,7 @@ object LiveActor {
 
         val iteratee = Iteratee.foreach[JsValue] { event =>
           // On Message
-        }.mapDone { _ =>
+        }.map { _ =>
           // On Connection Closed
         }
 
